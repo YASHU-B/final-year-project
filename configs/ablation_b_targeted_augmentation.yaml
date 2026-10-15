@@ -1,0 +1,26 @@
+experiment_name: ablation_b_targeted_augmentation_cross_entropy
+seed: 42
+
+data:
+  raw_data_dir: data/raw
+  split_dir: data/splits
+  image_size: 224
+  batch_size: 16
+  num_workers: 0
+  targeted_augmentation: true
+  targeted_classes: [akiec, bcc, bkl, df, mel, vasc]
+
+model:
+  backbone: efficientnet_b0
+  pretrained: true
+  use_cbam: false
+  num_classes: 7
+
+loss:
+  name: cross_entropy
+
+training:
+  epochs: 20
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  early_stopping_patience: 5

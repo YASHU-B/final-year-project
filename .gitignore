@@ -1,0 +1,21 @@
+# Dataset and generated outputs
+data/raw/
+data/interim/
+data/processed/
+data/splits/*.csv
+checkpoints/
+results/
+figures/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Operating-system files
+.DS_Store

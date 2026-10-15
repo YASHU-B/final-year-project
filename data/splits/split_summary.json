@@ -1,0 +1,50 @@
+{
+  "seed": 42,
+  "method": "two-stage StratifiedGroupKFold grouped by lesion_id",
+  "target_proportions": {
+    "train": "~71.4%",
+    "validation": "~14.3%",
+    "test": "~14.3%"
+  },
+  "splits": {
+    "train": {
+      "images": 7152,
+      "unique_lesions": 5335,
+      "class_counts": {
+        "akiec": 234,
+        "bcc": 367,
+        "bkl": 785,
+        "df": 81,
+        "mel": 795,
+        "nv": 4789,
+        "vasc": 101
+      }
+    },
+    "validation": {
+      "images": 1432,
+      "unique_lesions": 1068,
+      "class_counts": {
+        "akiec": 47,
+        "bcc": 73,
+        "bkl": 157,
+        "df": 17,
+        "mel": 159,
+        "nv": 958,
+        "vasc": 21
+      }
+    },
+    "test": {
+      "images": 1431,
+      "unique_lesions": 1067,
+      "class_counts": {
+        "akiec": 46,
+        "bcc": 74,
+        "bkl": 157,
+        "df": 17,
+        "mel": 159,
+        "nv": 958,
+        "vasc": 20
+      }
+    }
+  }
+}

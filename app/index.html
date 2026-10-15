@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skin Lesion AI Diagnostic Studio • Attention-Enhanced Dermatological Screening</title>
+  <meta name="description" content="Academic research prototype for explainable, high-accuracy multi-class skin lesion screening with EfficientNet-B0, CBAM attention, and Grad-CAM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Background Glow Elements -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <div class="studio-wrapper">
+    <!-- Top Modern Header -->
+    <header class="top-nav">
+      <div class="nav-brand">
+        <div class="brand-logo-wrap">
+          <span class="pulse-icon">🩺</span>
+          <span class="status-indicator-dot" title="AI Inference Engine Online"></span>
+        </div>
+        <div>
+          <div class="title-row">
+            <h1 class="nav-title">Skin Lesion AI Screening Studio</h1>
+            <span class="nav-version-badge">v2.4 • 84.4% Benchmark Accuracy</span>
+          </div>
+          <p class="nav-subtitle">Multi-Architecture Consensus • EfficientNet-B0 + CBAM Attention • Grad-CAM Explainability</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn-nav" id="btn-toggle-camera" title="Open webcam or phone camera">
+          <span>📸 Live Camera</span>
+        </button>
+        <button type="button" class="btn-nav" id="btn-toggle-abcde">
+          <span>💡 ABCDE Guide</span>
+        </button>
+        <button type="button" class="btn-nav" id="btn-toggle-technical">
+          <span>⚙️ Model Hub</span>
+        </button>
+        <button type="button" class="btn-nav btn-primary-nav" id="btn-print-report" title="Generate printable diagnostic summary">
+          <span>📄 Export Report</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Camera Capture Modal -->
+    <div class="modal-backdrop hidden" id="camera-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="modal-icon">📷</span>
+            <div>
+              <h3>Live Skin Photo Capture</h3>
+              <p>Position lesion in clear focus under steady, uniform lighting</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close" id="btn-close-camera">✕</button>
+        </div>
+        <div class="camera-viewport-wrap">
+          <video id="camera-video" autoplay playsinline muted></video>
+          <canvas id="camera-canvas" hidden></canvas>
+          <div class="camera-target-crosshair"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-camera">Cancel</button>
+          <button type="button" class="btn-capture" id="btn-capture-photo">
+            <span class="capture-inner-dot"></span> Snap & Analyze
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collapsible: ABCDE Educational Guide -->
+    <div class="expandable-panel hidden" id="panel-abcde">
+      <div class="panel-inner">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h3>Clinical ABCDE Dermatological Criteria</h3>
+            <p>Standard criteria used by dermatologists to assess suspicious pigmented lesions</p>
+          </div>
+          <button type="button" class="btn-close" id="btn-close-abcde">✕</button>
+        </div>
+        <div class="abcde-row">
+          <div class="abcde-chip">
+            <div class="chip-letter">A</div>
+            <div class="chip-content">
+              <strong>Asymmetry</strong>
+              <span>One half does not mirror the opposite half in shape or contour.</span>
+            </div>
+          </div>
+          <div class="abcde-chip">
+            <div class="chip-letter">B</div>
+            <div class="chip-content">
+              <strong>Border</strong>
+              <span>Edges are ragged, notched, blurred, or poorly circumscribed.</span>
+            </div>
+          </div>
+          <div class="abcde-chip">
+            <div class="chip-letter">C</div>
+            <div class="chip-content">
+              <strong>Color</strong>
+              <span>Uneven shades of tan, brown, black, with patches of pink, red, or white.</span>
+            </div>
+          </div>
+          <div class="abcde-chip">
+            <div class="chip-letter">D</div>
+            <div class="chip-content">
+              <strong>Diameter</strong>
+              <span>Usually greater than 6mm (pencil eraser size), though early melanomas can be smaller.</span>
+            </div>
+          </div>
+          <div class="abcde-chip">
+            <div class="chip-letter">E</div>
+            <div class="chip-content">
+              <strong>Evolving</strong>
+              <span>Any noticeable change in size, shape, surface elevation, itching, or bleeding.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collapsible: Technical Model Selection & Consensus Hub -->
+    <div class="expandable-panel hidden" id="panel-technical">
+      <div class="panel-inner">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h3>Diagnostic Model Selection & Ablation Hub</h3>
+            <p>Compare performance and vote distribution across all 5 independently trained checkpoints</p>
+          </div>
+          <button type="button" class="btn-close" id="btn-close-technical">✕</button>
+        </div>
+        <div class="tech-model-bar">
+          <label class="tech-radio active">
+            <input type="radio" name="model" value="ensemble" checked>
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Ensemble Consensus (Optimal Multi-Architecture)</strong>
+                <span class="tech-acc-badge badge-top">84.4% Accuracy • AUC 0.965</span>
+              </div>
+              <p>Validation-optimized consensus weighting high-generalization checkpoints for superior sensitivity and false-negative prevention.</p>
+            </div>
+          </label>
+          <label class="tech-radio">
+            <input type="radio" name="model" value="baseline">
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Baseline (EfficientNet-B0 + Cross-Entropy)</strong>
+                <span class="tech-acc-badge">83.4% Accuracy • AUC 0.951</span>
+              </div>
+              <p>Standard ImageNet-pretrained backbone with Cross-Entropy loss without attention modules.</p>
+            </div>
+          </label>
+          <label class="tech-radio">
+            <input type="radio" name="model" value="ablation_d">
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Ablation D (EfficientNet-B0 + CBAM Attention)</strong>
+                <span class="tech-acc-badge">77.4% Accuracy • AUC 0.932</span>
+              </div>
+              <p>Channel and spatial attention mechanism applied at the final 1280-channel feature map.</p>
+            </div>
+          </label>
+          <label class="tech-radio">
+            <input type="radio" name="model" value="ablation_b">
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Ablation B (+ Targeted Minority Augmentation)</strong>
+                <span class="tech-acc-badge">77.9% Accuracy • AUC 0.940</span>
+              </div>
+              <p>Affine and color augmentations selectively applied to minority classes during training.</p>
+            </div>
+          </label>
+          <label class="tech-radio">
+            <input type="radio" name="model" value="ablation_c">
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Ablation C (+ Class-Weighted Focal Loss)</strong>
+                <span class="tech-acc-badge">77.7% Accuracy • AUC 0.943</span>
+              </div>
+              <p>Effective-number class weighting addressing long-tail class imbalance.</p>
+            </div>
+          </label>
+          <label class="tech-radio">
+            <input type="radio" name="model" value="proposed_e">
+            <div class="tech-radio-content">
+              <div class="tech-name-row">
+                <strong>Configuration E (Full CBAM + Focal Loss)</strong>
+                <span class="tech-acc-badge">74.0% Accuracy • AUC 0.928</span>
+              </div>
+              <p>Integrated architecture combining CBAM attention with Focal Loss.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Upload & Quick Sample Section -->
+    <section class="section-upload">
+      <div class="upload-container">
+        <!-- Interactive Dropzone -->
+        <div class="dropzone-box" id="dropzone">
+          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+          <div class="drop-icon-ring">
+            <span class="drop-icon">📷</span>
+          </div>
+          <div class="drop-text-content">
+            <div class="drop-prompt">
+              <strong>Drag & drop lesion photo here</strong> or <span class="drop-click">Browse Photo</span>
+            </div>
+            <span class="drop-note">Supports JPG, PNG, WebP • Paste directly with Ctrl+V • Close-up dermoscopic or macro skin photo</span>
+          </div>
+          <div class="drop-action-badges">
+            <span class="drop-chip">⚡ Instant GPU Inference</span>
+            <span class="drop-chip">🛡️ 3-Way Skin Gatekeeper</span>
+            <span class="drop-chip">🔬 Grad-CAM Attention</span>
+          </div>
+        </div>
+
+        <!-- Sample Carousel / Quick Benchmark Strip -->
+        <div class="sample-strip-wrap">
+          <div class="sample-strip-label">
+            <span>Or test verified benchmark clinical cases from the untouched test split:</span>
+            <span class="sample-counter">7 Reference Cases</span>
+          </div>
+          <div class="sample-strip" id="samples-grid">
+            <div class="sample-skeleton">Loading benchmark samples...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading State with Cyber-Shimmer -->
+    <div class="loading-box hidden" id="loading-state">
+      <div class="loading-scanner">
+        <div class="scanner-laser"></div>
+        <div class="spinner"></div>
+      </div>
+      <h3>Analyzing Dermatological Textures & Generating Grad-CAM...</h3>
+      <p>Computing EfficientNet-B0 feature representations, CBAM spatial attention, and ABCDE morphological indicators</p>
+    </div>
+
+    <!-- In-Page Alert Card for Improper Images / Errors -->
+    <div class="result-card alert-card hidden" id="alert-card">
+      <div class="alert-top">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-titles">
+          <h3 class="alert-title" id="alert-title">Improper Image Detected</h3>
+          <p class="alert-message" id="alert-message">This photo does not appear to show clear human skin or a skin lesion.</p>
+        </div>
+      </div>
+      <div class="alert-tips-box">
+        <span class="alert-tips-heading">How to capture an accurate scan:</span>
+        <ul class="alert-tips-list" id="alert-tips-list">
+          <li>Ensure the camera is focused directly on the skin mark or mole.</li>
+          <li>Make sure the lighting is bright and even without harsh reflections.</li>
+          <li>Avoid pictures of non-skin objects, clothing, pets, or computer screens.</li>
+        </ul>
+      </div>
+      <button type="button" class="btn-retry" id="btn-retry-upload">📷 Try Another Photo</button>
+    </div>
+
+    <!-- Output Section: Clean, Prominent, Clear -->
+    <section class="section-output hidden" id="results-container">
+      
+      <!-- 1. Triage Banner & Diagnosis Hero -->
+      <div class="result-card triage-card" id="triage-card">
+        <div class="triage-top">
+          <div class="triage-status-pill">
+            <span class="status-dot" id="triage-dot"></span>
+            <span id="triage-level-tag">Low Risk</span>
+            <span class="category-sep">•</span>
+            <span id="triage-category-tag">Benign</span>
+            <span class="category-sep">•</span>
+            <span class="active-model-tag" id="active-model-tag">Ensemble (84.4% Acc)</span>
+          </div>
+          <div class="triage-right-badges">
+            <div class="confidence-radial-wrap">
+              <span class="conf-lbl">Confidence:</span>
+              <span class="conf-pct" id="top-confidence">00.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="triage-core">
+          <div class="triage-title-group">
+            <h2 class="triage-title" id="triage-simple-name">Normal Mole</h2>
+            <div class="triage-sub" id="triage-medical-name">Clinical classification: Melanocytic Nevi (NV)</div>
+          </div>
+          <p class="triage-expl" id="triage-plain-desc">A typical, non-cancerous skin mole. Common and harmless.</p>
+        </div>
+      </div>
+
+      <!-- 2. Visual Inspection & Interactive Grad-CAM Heatmap Viewer -->
+      <div class="result-card visual-card">
+        <div class="visual-header">
+          <div class="visual-title-wrap">
+            <h3>Visual Inspection & AI Attention (Grad-CAM)</h3>
+            <span class="visual-hint">Warm yellow and red highlights show the exact morphological regions that guided the classification</span>
+          </div>
+          <div class="visual-view-modes">
+            <button type="button" class="view-btn active" id="view-split">Side-by-Side</button>
+            <button type="button" class="view-btn" id="view-slider">Interactive Slider</button>
+            <button type="button" class="view-btn" id="view-overlay">Heatmap Only</button>
+          </div>
+        </div>
+
+        <!-- Mode A: Side by Side (Default) -->
+        <div class="visual-grid" id="visual-side-by-side">
+          <div class="img-tile">
+            <span class="img-badge">Uploaded Photo</span>
+            <div class="img-frame">
+              <img id="original-preview" alt="Skin photo" src="">
+            </div>
+          </div>
+          <div class="img-tile highlight">
+            <span class="img-badge badge-cam">AI Focus Heatmap (Grad-CAM)</span>
+            <div class="img-frame">
+              <img id="gradcam-preview" alt="Grad-CAM overlay" src="">
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode B: Interactive Comparison Slider -->
+        <div class="image-slider-container hidden" id="visual-slider-wrap">
+          <div class="slider-image-before">
+            <img id="slider-img-original" alt="Original photo" src="">
+            <span class="slider-badge slider-badge-left">Original</span>
+          </div>
+          <div class="slider-image-after" id="slider-after-crop">
+            <img id="slider-img-cam" alt="Grad-CAM Heatmap" src="">
+            <span class="slider-badge slider-badge-right">Grad-CAM Focus</span>
+          </div>
+          <input type="range" min="0" max="100" value="50" class="slider-range-input" id="compare-slider-input" aria-label="Reveal Heatmap Slider">
+          <div class="slider-divider-line" id="slider-divider-line">
+            <div class="slider-handle-button">
+              <span>‹ ›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2.5 Computed Dermoscopic ABCDE Feature Card -->
+      <div class="result-card abcde-metrics-card" id="abcde-metrics-card">
+        <div class="abcde-card-header">
+          <div>
+            <h3>🔬 Quantitative Dermoscopic Feature Extraction (ABCDE)</h3>
+            <p class="abcde-card-subtitle">Computer-vision morphological analysis extracted from lesion contour, geometry, and pigment distribution</p>
+          </div>
+          <span class="abcde-overall-badge" id="abcde-overall-badge">Benign Profile</span>
+        </div>
+        <div class="abcde-metrics-grid">
+          <!-- Asymmetry -->
+          <div class="abcde-metric-box" id="metric-box-asymmetry">
+            <div class="metric-top">
+              <span class="metric-letter">A</span>
+              <div class="metric-label-group">
+                <strong class="metric-name">Asymmetry Index</strong>
+                <span class="metric-status" id="asym-status">Bilateral Symmetry</span>
+              </div>
+              <span class="metric-score" id="asym-score">1.2 / 10</span>
+            </div>
+            <div class="metric-bar-bg">
+              <div class="metric-bar-fill" id="asym-bar" style="width: 12%;"></div>
+            </div>
+          </div>
+
+          <!-- Border -->
+          <div class="abcde-metric-box" id="metric-box-border">
+            <div class="metric-top">
+              <span class="metric-letter">B</span>
+              <div class="metric-label-group">
+                <strong class="metric-name">Border Irregularity</strong>
+                <span class="metric-status" id="border-status">Smooth Margins</span>
+              </div>
+              <span class="metric-score" id="border-score">1.5 / 10</span>
+            </div>
+            <div class="metric-bar-bg">
+              <div class="metric-bar-fill" id="border-bar" style="width: 15%;"></div>
+            </div>
+          </div>
+
+          <!-- Color -->
+          <div class="abcde-metric-box" id="metric-box-color">
+            <div class="metric-top">
+              <span class="metric-letter">C</span>
+              <div class="metric-label-group">
+                <strong class="metric-name">Color Variegation</strong>
+                <span class="metric-status" id="color-status">Uniform Pigmentation</span>
+              </div>
+              <span class="metric-score" id="color-score">1.8 / 10</span>
+            </div>
+            <div class="metric-bar-bg">
+              <div class="metric-bar-fill" id="color-bar" style="width: 18%;"></div>
+            </div>
+          </div>
+
+          <!-- Diameter / Area -->
+          <div class="abcde-metric-box" id="metric-box-diameter">
+            <div class="metric-top">
+              <span class="metric-letter">D</span>
+              <div class="metric-label-group">
+                <strong class="metric-name">Diameter Coverage</strong>
+                <span class="metric-status" id="diameter-status">Medium Spot</span>
+              </div>
+              <span class="metric-score" id="diameter-score">25.0% FOV</span>
+            </div>
+            <div class="metric-bar-bg">
+              <div class="metric-bar-fill" id="diameter-bar" style="width: 25%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. What to do Next (Actionable Suggestions) -->
+      <div class="result-card advice-card" id="suggestions-card">
+        <div class="urgency-row" id="urgency-box">
+          <span class="urgency-bell">⏰</span>
+          <div>
+            <strong>Recommended Timeline:</strong>
+            <span id="urgency-value">Routine monitoring. No immediate urgency.</span>
+          </div>
+        </div>
+
+        <div class="advice-columns">
+          <div class="advice-col dos-col">
+            <h4>✅ Recommended Actions:</h4>
+            <ul class="advice-list" id="suggestions-dos">
+              <li>Perform regular monthly self-examinations with the ABCDE rule.</li>
+              <li>Apply SPF 50+ sunscreen outdoors.</li>
+            </ul>
+          </div>
+          <div class="advice-col donts-col">
+            <h4>⛔ Things to Avoid:</h4>
+            <ul class="advice-list" id="suggestions-donts">
+              <li>Do NOT scratch, scrape, or irritate the spot.</li>
+              <li>Do NOT attempt home removal remedies.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Collapsible Detailed Breakdown (Probabilities & Consensus) -->
+      <details class="tech-accordion" id="tech-accordion">
+        <summary class="tech-summary">
+          <span>🔬 View Full 7-Class Probabilities & Model Consensus</span>
+          <span class="summary-toggle-icon">▼</span>
+        </summary>
+        <div class="tech-details-body">
+          <!-- Consensus Card -->
+          <div class="subcard" id="reliability-card">
+            <div class="subcard-header">
+              <span id="reliability-icon">⚠️</span>
+              <div>
+                <strong id="reliability-title">Reliability Status</strong>
+                <p id="reliability-reason">Reliability note...</p>
+              </div>
+            </div>
+            <div class="consensus-grid" id="consensus-grid"></div>
+          </div>
+
+          <!-- 7-Class Probabilities -->
+          <div class="subcard">
+            <h4>Softmax Probability Distribution (All 7 Classes):</h4>
+            <div class="prob-list" id="prob-list"></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Empty Initial Guidance -->
+    <div class="empty-guide" id="empty-state">
+      <div class="empty-icon-ring">
+        <span class="empty-icon">👆</span>
+      </div>
+      <h3>Upload an image or choose any clinical sample above</h3>
+      <p>The AI will evaluate skin textures, highlight focal features using Grad-CAM, extract ABCDE criteria, and provide clear clinical guidance.</p>
+    </div>
+
+    <!-- Minimal Clean Footer -->
+    <footer class="app-footer">
+      <p>Skin Lesion AI Screening Studio • Academic Research Prototype • EfficientNet-B0 + CBAM Attention • Not a clinical diagnostic device.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
